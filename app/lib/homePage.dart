@@ -1,15 +1,9 @@
+import 'package:app/loginPage.dart';
 import 'package:flutter/material.dart';
+import 'models/Product.dart';
+// Import your product detail page
 
 class HomePage extends StatelessWidget {
-  // Danh sách các cuốn sách (có thể thay thế bằng dữ liệu thực từ API hoặc cơ sở dữ liệu)
-  final List<String> books = [
-    'Book 1',
-    'Book 2',
-    'Book 3',
-    'Book 4',
-    'Book 5',
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,16 +30,44 @@ class HomePage extends StatelessWidget {
             ),
             SizedBox(height: 20),
             Expanded(
-              child: ListView.builder(
-                itemCount: books.length,
+              // Wrap the Column in Expanded
+              child: GridView.builder(
+                itemCount: products.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 20,
+                  crossAxisSpacing: 20,
+                  childAspectRatio: 0.70,
+                ),
                 itemBuilder: (context, index) {
-                  return Card(
-                    child: ListTile(
-                      title: Text(books[index]),
-                      // Tùy chỉnh xử lý khi người dùng nhấn vào mỗi sách ở đây
-                      onTap: () {
-                        // Thực hiện hành động tương ứng khi người dùng chọn một cuốn sách
-                      },
+                  return GestureDetector(
+                    onTap: () {
+                      // Navigate to detail page when tapped
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => LoginPage(),
+                        ),
+                      );
+                    },
+                    child: Card(
+                      child: Container(
+                        padding: EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Column(
+                          children: [
+                            Hero(
+                              tag: products[index].id,
+                              child: Image.asset(products[index].image),
+                            ),
+                            Text(
+                              products[index].title,
+                            )
+                          ],
+                        ),
+                      ),
                     ),
                   );
                 },
