@@ -1,3 +1,4 @@
+import 'package:app/detailPage.dart';
 import 'package:app/loginPage.dart';
 import 'package:flutter/material.dart';
 import 'models/Product.dart';
@@ -24,7 +25,7 @@ class HomePage extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 // Navigate back to login page
-                Navigator.pushReplacementNamed(context, '/signin');
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => LoginPage()));
               },
               child: Text('Log out'),
             ),
@@ -33,7 +34,7 @@ class HomePage extends StatelessWidget {
               // Wrap the Column in Expanded
               child: GridView.builder(
                 itemCount: products.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   mainAxisSpacing: 20,
                   crossAxisSpacing: 20,
@@ -46,7 +47,7 @@ class HomePage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => LoginPage(),
+                          builder: (context) => DetailPage(),
                         ),
                       );
                     },
