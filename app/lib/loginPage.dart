@@ -1,4 +1,7 @@
 // ignore: file_names
+import 'package:app/homePage.dart';
+import 'package:app/rootApp.dart';
+import 'package:app/signUpPage.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {
@@ -44,7 +47,7 @@ class LoginPage extends StatelessWidget {
                 debugPrint("Login");
                 debugPrint("Username: " + this._username);
                 debugPrint("Password: " + this._password);
-                Navigator.pushReplacementNamed(context, '/home');
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => RootApp()));
               },
               child: const Text('Sign in'),
             ),
@@ -55,7 +58,7 @@ class LoginPage extends StatelessWidget {
                 const Text("Don't have account?"),
                 TextButton(
                     onPressed: () {
-                      Navigator.pushReplacementNamed(context, '/signup');
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => SignupPage()));
                     },
                     child: const Text("Sign up"))
               ],
