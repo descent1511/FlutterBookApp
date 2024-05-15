@@ -1,15 +1,46 @@
+import 'dart:convert';
 import 'package:app/detailPage.dart';
-import 'package:app/loginPage.dart';
 import 'package:flutter/material.dart';
-import 'models/Product.dart';
-// Import your product detail page
+import 'package:http/http.dart' as http;
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  List<Book> books = [];
+  final TextEditingController _controller = TextEditingController();
+
+  Future<void> fetchBooks(String query) async {
+    final response = await http
+        .get(Uri.parse('https://www.googleapis.com/books/v1/volumes?q=$query'));
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      final List<dynamic> items = data['items'];
+
+      setState(() {
+        books = items.map((item) => Book.fromJson(item)).toList();
+      });
+    } else {
+      throw Exception('Failed to load books');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchBooks('flutter');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home Page'),
+        title: const Text('Home Page'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -21,19 +52,22 @@ class HomePage extends StatelessWidget {
               style: TextStyle(fontSize: 24),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 20),
+            TextField(
+              controller: _controller,
+              decoration: const InputDecoration(
+                labelText: 'Search',
+              ),
+            ),
             ElevatedButton(
               onPressed: () {
-                // Navigate back to login page
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => LoginPage()));
+                fetchBooks(_controller.text);
               },
-              child: Text('Log out'),
+              child: const Text('Search'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Expanded(
-              // Wrap the Column in Expanded
               child: GridView.builder(
-                itemCount: products.length,
+                itemCount: books.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   mainAxisSpacing: 20,
@@ -43,29 +77,30 @@ class HomePage extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () {
-                      // Navigate to detail page when tapped
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => DetailPage(),
+                          builder: (context) => DetailPage(book: books[index]),
                         ),
                       );
                     },
                     child: Card(
                       child: Container(
-                        padding: EdgeInsets.all(20),
+                        padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Column(
                           children: [
-                            Hero(
-                              tag: products[index].id,
-                              child: Image.asset(products[index].image),
+                            // Display book cover image
+                            Expanded(
+                              child: Image.network(books[index].coverImageUrl),
                             ),
+                            const SizedBox(height: 10),
                             Text(
-                              products[index].title,
-                            )
+                              books[index].title,
+                              textAlign: TextAlign.center,
+                            ),
                           ],
                         ),
                       ),
@@ -79,4 +114,42 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
+}
+
+class Book {
+  final String title;
+  final String coverImageUrl;
+  final List<String> authors;
+  final String description;
+
+  Book({
+    required this.title,
+    required this.coverImageUrl,
+    required this.authors,
+    required this.description,
+  });
+
+factory Book.fromJson(Map<String, dynamic> json) {
+  String title = json['volumeInfo']['title'] as String;
+  List<String> titleWords = title.split(' ');
+  if (titleWords.length > 6) {
+    title = titleWords.take(6).join(' ') + '...';
+  }
+
+  List<String> authors = json['volumeInfo']['authors'] != null
+      ? List<String>.from(json['volumeInfo']['authors'])
+      : [];
+
+  return Book(
+    title: title,
+    coverImageUrl: json['volumeInfo']['imageLinks'] != null
+        ? json['volumeInfo']['imageLinks']['thumbnail'] as String
+        : 'default_image_url_or_empty_string',
+    authors: authors,
+    description: json['volumeInfo']['description'] != null
+        ? json['volumeInfo']['description'] as String
+        : 'No description available',
+  );
+}
+
 }
