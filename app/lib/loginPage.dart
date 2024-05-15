@@ -1,5 +1,4 @@
 // ignore: file_names
-import 'package:app/homePage.dart';
 import 'package:app/rootApp.dart';
 import 'package:app/signUpPage.dart';
 import 'package:flutter/material.dart';
@@ -45,9 +44,9 @@ class LoginPage extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 debugPrint("Login");
-                debugPrint("Username: " + this._username);
-                debugPrint("Password: " + this._password);
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => RootApp()));
+                debugPrint("Username: $_username");
+                debugPrint("Password: $_password");
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const RootApp()));
               },
               child: const Text('Sign in'),
             ),
