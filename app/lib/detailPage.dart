@@ -1,3 +1,4 @@
+
 import 'package:app/models/bookAPIs.dart';
 import 'package:app/readingPage.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ class DetailPage extends StatelessWidget {
   final BookAPIs book;
 
   const DetailPage({super.key, required this.book});
+
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +46,14 @@ class DetailPage extends StatelessWidget {
   onPressed: () {
   },
   child: const Text('Buy Now'),
+),
+      ],
+    ),
+  ),
+),
+    );
+  },
+  child: const Text('Read'),
 ),
       ],
     ),

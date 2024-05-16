@@ -3,16 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:app/loginPage.dart';
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+  const ProfilePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+
         title: const Text('Profile'),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
+
             onPressed: () {
               // Navigate back to login page
               Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => LoginPage()));
@@ -20,6 +22,7 @@ class ProfilePage extends StatelessWidget {
           ),
         ],
       ),
+
       body: Column(
         children: [
           const CircleAvatar(
@@ -56,6 +59,7 @@ class ProfilePage extends StatelessWidget {
             ),
           ),
         ],
+
       ),
     );
   }

@@ -1,10 +1,13 @@
+
 import 'package:flutter/material.dart';
 
 class ReadingPage extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+
         title: Text('Reading Page'),
       ),
       body: Center(
@@ -24,6 +27,7 @@ class ReadingPage extends StatelessWidget {
             ),
           ],
         ),
+
       ),
     );
   }
