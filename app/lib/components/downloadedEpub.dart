@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' as path;
 
-
 class DownloadedEpub extends StatefulWidget {
   @override
   _DownloadedEpubState createState() => _DownloadedEpubState();
@@ -14,6 +13,7 @@ class DownloadedEpub extends StatefulWidget {
 
 class _DownloadedEpubState extends State<DownloadedEpub> {
   List<String> epubFiles = [];
+  Set<String> favoriteFiles = {};
 
   @override
   void initState() {
@@ -21,12 +21,20 @@ class _DownloadedEpubState extends State<DownloadedEpub> {
     loadEpubFiles();
   }
 
+  void toggleFavorite(String epubFile) {
+    setState(() {
+      if (favoriteFiles.contains(epubFile)) {
+        favoriteFiles.remove(epubFile);
+      } else {
+        favoriteFiles.add(epubFile);
+      }
+    });
+  }
+
   Future<void> loadEpubFiles() async {
     try {
-      final manifestContent =
-          await rootBundle.loadString('AssetManifest.json');
-      final manifestMap =
-          json.decode(manifestContent) as Map<String, dynamic>;
+      final manifestContent = await rootBundle.loadString('AssetManifest.json');
+      final manifestMap = json.decode(manifestContent) as Map<String, dynamic>;
       final epubPaths = manifestMap.keys.where((String key) =>
           key.contains('assets/books/') && key.endsWith('.epub'));
       setState(() {
@@ -41,7 +49,7 @@ class _DownloadedEpubState extends State<DownloadedEpub> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Downloaded EPUBs'),
+        title: Text('Downloaded books'),
       ),
       body: ListView.builder(
         itemCount: epubFiles.length,
@@ -53,12 +61,18 @@ class _DownloadedEpubState extends State<DownloadedEpub> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
+                  icon: Icon(favoriteFiles.contains(epubFile)
+                      ? Icons.favorite
+                      : Icons.favorite_border),
+                  onPressed: () => toggleFavorite(epubFile),
+                ),
+                IconButton(
                   icon: Icon(Icons.open_in_new),
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ReadingPage(),
+                        builder: (context) => ReadingPage(epubPath: epubFile),
                       ),
                     );
                   },
@@ -69,27 +83,5 @@ class _DownloadedEpubState extends State<DownloadedEpub> {
         },
       ),
     );
-  }
-
-  Future<void> _deleteEpubFile(String epubFile) async {
-    try {
-      final file = File(epubFile);
-      await file.delete();
-      setState(() {
-        epubFiles.remove(epubFile);
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('EPUB file deleted successfully.'),
-        ),
-      );
-    } catch (e) {
-      print('Error deleting EPUB file: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to delete EPUB file.'),
-        ),
-      );
-    }
   }
 }
