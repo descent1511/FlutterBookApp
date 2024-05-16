@@ -1,17 +1,22 @@
 import 'dart:convert';
 import 'package:app/detailPage.dart';
+
 import 'package:app/models/bookAPIs.dart';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
+
   const HomePage({super.key});
+
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+
   List<BookAPIs> BookFromAPIs = [];
   final TextEditingController _controller = TextEditingController();
 
@@ -27,6 +32,8 @@ class _HomePageState extends State<HomePage> {
 
       setState(() {
         BookFromAPIs = items.map((item) => BookAPIs.fromJson(item)).toList();
+
+
       });
     } else {
       throw Exception('Failed to load books');
@@ -70,7 +77,9 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 20),
             Expanded(
               child: GridView.builder(
+
                 itemCount: BookFromAPIs.length,
+
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   mainAxisSpacing: 20,
@@ -83,7 +92,9 @@ class _HomePageState extends State<HomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
+
                           builder: (context) => DetailPage(book: BookFromAPIs[index]),
+
                         ),
                       );
                     },
@@ -97,11 +108,13 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             // Display book cover image
                             Expanded(
+
                               child: Image.network(BookFromAPIs[index].coverImageUrl),
                             ),
                             const SizedBox(height: 10),
                             Text(
                               BookFromAPIs[index].title,
+
                               textAlign: TextAlign.center,
                             ),
                           ],
@@ -118,5 +131,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
+
 
 
