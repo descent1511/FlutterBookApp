@@ -1,11 +1,14 @@
+
+import 'package:app/models/bookAPIs.dart';
 import 'package:app/readingPage.dart';
 import 'package:flutter/material.dart';
-import 'package:app/homePage.dart'; // Import the Book class from homePage.dart
+// Import the Book class from homePage.dart
 
 class DetailPage extends StatelessWidget {
-  final Book book;
+  final BookAPIs book;
 
-  const DetailPage({Key? key, required this.book}) : super(key: key);
+  const DetailPage({super.key, required this.book});
+
 
   @override
   Widget build(BuildContext context) {
@@ -21,31 +24,33 @@ class DetailPage extends StatelessWidget {
       children: [
         // Display book cover image
         Image.network(book.coverImageUrl),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         // Display book title
         Text(
           'Title: ${book.title}',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         // Display book authors
         Text(
           'Authors: ${book.authors}',
-          style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+          style: const TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         // Display book description
         Text(
           'Description: ${book.description}',
-          style: TextStyle(fontSize: 16),
+          style: const TextStyle(fontSize: 16),
         ),
         ElevatedButton(
   onPressed: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ReadingPage(book: book),
-      ),
+  },
+  child: const Text('Buy Now'),
+),
+      ],
+    ),
+  ),
+),
     );
   },
   child: const Text('Read'),

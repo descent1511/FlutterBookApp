@@ -1,19 +1,33 @@
-import 'package:app/homePage.dart';
+
 import 'package:flutter/material.dart';
 
 class ReadingPage extends StatelessWidget {
-  final Book book;
-
-  const ReadingPage({Key? key, required this.book}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Reading ${book.title}'),
+
+        title: Text('Reading Page'),
       ),
       body: Center(
-        child: Text('Reading content goes here'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Welcome to the Reading Page!',
+              style: TextStyle(fontSize: 24),
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Go Back'),
+            ),
+          ],
+        ),
+
       ),
     );
   }

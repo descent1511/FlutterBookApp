@@ -39,7 +39,10 @@ dependencies:
   cupertino_icons: ^1.0.6
   line_icons: ^2.0.3
   salomon_bottom_bar: ^3.3.2
-
+  path: any
+  epubx: ^3.0.0
+  epub_view: ^2.3.0
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -65,6 +68,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+    - assets/books/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -1,29 +1,39 @@
 import 'dart:convert';
 import 'package:app/detailPage.dart';
+
+import 'package:app/models/bookAPIs.dart';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+
+  const HomePage({super.key});
+
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Book> books = [];
+
+  List<BookAPIs> BookFromAPIs = [];
   final TextEditingController _controller = TextEditingController();
 
   Future<void> fetchBooks(String query) async {
-    final response = await http
-        .get(Uri.parse('https://www.googleapis.com/books/v1/volumes?q=$query'));
+    final response = await http.get(
+      Uri.parse(
+          'https://www.googleapis.com/books/v1/volumes?q=$query&maxResults=7'),
+    );
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = jsonDecode(response.body);
-      final List<dynamic> items = data['items'];
+      final List<dynamic> items = data['items'] ?? [];
 
       setState(() {
-        books = items.map((item) => Book.fromJson(item)).toList();
+        BookFromAPIs = items.map((item) => BookAPIs.fromJson(item)).toList();
+
+
       });
     } else {
       throw Exception('Failed to load books');
@@ -67,7 +77,9 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 20),
             Expanded(
               child: GridView.builder(
-                itemCount: books.length,
+
+                itemCount: BookFromAPIs.length,
+
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   mainAxisSpacing: 20,
@@ -80,7 +92,9 @@ class _HomePageState extends State<HomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => DetailPage(book: books[index]),
+
+                          builder: (context) => DetailPage(book: BookFromAPIs[index]),
+
                         ),
                       );
                     },
@@ -94,11 +108,13 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             // Display book cover image
                             Expanded(
-                              child: Image.network(books[index].coverImageUrl),
+
+                              child: Image.network(BookFromAPIs[index].coverImageUrl),
                             ),
                             const SizedBox(height: 10),
                             Text(
-                              books[index].title,
+                              BookFromAPIs[index].title,
+
                               textAlign: TextAlign.center,
                             ),
                           ],
@@ -116,40 +132,6 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class Book {
-  final String title;
-  final String coverImageUrl;
-  final List<String> authors;
-  final String description;
 
-  Book({
-    required this.title,
-    required this.coverImageUrl,
-    required this.authors,
-    required this.description,
-  });
 
-factory Book.fromJson(Map<String, dynamic> json) {
-  String title = json['volumeInfo']['title'] as String;
-  List<String> titleWords = title.split(' ');
-  if (titleWords.length > 6) {
-    title = titleWords.take(6).join(' ') + '...';
-  }
 
-  List<String> authors = json['volumeInfo']['authors'] != null
-      ? List<String>.from(json['volumeInfo']['authors'])
-      : [];
-
-  return Book(
-    title: title,
-    coverImageUrl: json['volumeInfo']['imageLinks'] != null
-        ? json['volumeInfo']['imageLinks']['thumbnail'] as String
-        : 'default_image_url_or_empty_string',
-    authors: authors,
-    description: json['volumeInfo']['description'] != null
-        ? json['volumeInfo']['description'] as String
-        : 'No description available',
-  );
-}
-
-}
