@@ -1,4 +1,5 @@
 class BookAPIs {
+  final String id;
   final String title;
   final String coverImageUrl;
   final List<String> authors;
@@ -6,6 +7,7 @@ class BookAPIs {
   final String filePath;
 
   BookAPIs({
+    required this.id,
     required this.title,
     required this.coverImageUrl,
     required this.authors,
@@ -14,6 +16,7 @@ class BookAPIs {
   });
 
   factory BookAPIs.fromJson(Map<String, dynamic> json) {
+    String id = json['id'] as String;
     String title = json['volumeInfo']['title'] is String
         ? json['volumeInfo']['title'] as String
         : '';
@@ -27,6 +30,7 @@ class BookAPIs {
         : [];
 
     return BookAPIs(
+      id: id,
       title: title,
       coverImageUrl: json['volumeInfo']['imageLinks'] != null &&
               json['volumeInfo']['imageLinks']['thumbnail'] is String
