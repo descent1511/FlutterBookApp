@@ -41,11 +41,6 @@ class _FavoritePageState extends State<FavoritePage> {
     User? user = _auth.currentUser;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Favorite Books'),
-        centerTitle: true,
-        backgroundColor: Colors.teal,
-      ),
       body: user == null
           ? Center(child: Text('Please log in to view your favorite books'))
           : Padding(

@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "544039859689",
+    "firebase_url": "https://bookflutterapp-aabbc-default-rtdb.firebaseio.com",
     "project_id": "bookflutterapp-aabbc",
     "storage_bucket": "bookflutterapp-aabbc.appspot.com"
   },

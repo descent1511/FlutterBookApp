@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:app/detailPage.dart';
 import 'package:app/models/bookAPIs.dart';
+import 'package:app/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -42,11 +43,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home Page'),
-        centerTitle: true,
-        backgroundColor: Colors.teal,
-      ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -85,7 +81,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),
-              child: const Text('Search'),
+              child: const Text('Search', style: TextStyle(color: white),),
             ),
             const SizedBox(height: 20),
             Expanded(

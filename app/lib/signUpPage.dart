@@ -2,6 +2,7 @@ import 'package:app/loginPage.dart';
 import 'package:app/rootApp.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignupPage extends StatelessWidget {
   String _name = '';
@@ -12,6 +13,7 @@ class SignupPage extends StatelessWidget {
   SignupPage({super.key});
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +92,16 @@ class SignupPage extends StatelessWidget {
                         email: _email,
                         password: _password,
                       );
+
+                      // Save the user's name in Firestore
+                      await _firestore.collection('users').doc(userCredential.user!.uid).set({
+                        'name': _name,
+                        'email': _email,
+                      });
+
+                      // Update the user's display name
+                      await userCredential.user?.updateDisplayName(_name);
+
                       Navigator.pushReplacement(context,
                           MaterialPageRoute(builder: (_) => const RootApp()));
                     } on FirebaseAuthException catch (e) {
