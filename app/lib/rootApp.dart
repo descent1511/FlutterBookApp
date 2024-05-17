@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 class RootApp extends StatefulWidget {
-  const RootApp({super.key});
+  const RootApp({Key? key}) : super(key: key);
 
   @override
   State<RootApp> createState() => _RootAppState();
@@ -15,38 +15,43 @@ class RootApp extends StatefulWidget {
 
 class _RootAppState extends State<RootApp> {
   int pageIndex = 0;
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: white,
+    return Scaffold( // Set background color
       bottomNavigationBar: getTabs(),
       body: getBody(),
     );
   }
-  Widget getBody(){
+
+  Widget getBody() {
     return IndexedStack(
       index: pageIndex,
       children: const [
-       HomePage(),
-       FavoritePage(),
-       ProfilePage()
+        HomePage(),
+        FavoritePage(),
+        ProfilePage(),
       ],
     );
   }
 
   Widget getTabs() {
     return SalomonBottomBar(
-        currentIndex: pageIndex,
-        onTap: (index) {
-          setState(() {
-            pageIndex = index;
-          });
-        },
-        items: List.generate(rootAppJson.length, (index) {
-          return SalomonBottomBarItem(
-              selectedColor: rootAppJson[index]['color'],
-              icon: Icon(rootAppJson[index]['icon']),
-              title: Text(rootAppJson[index]['text']));
-        }));
+      currentIndex: pageIndex,
+      onTap: (index) {
+        setState(() {
+          pageIndex = index;
+        });
+      },
+      selectedItemColor: Colors.teal, // Set selected item color
+      unselectedItemColor: Colors.grey, // Set unselected item color
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10), // Add margin to bottom bar
+      items: List.generate(rootAppJson.length, (index) {
+        return SalomonBottomBarItem( // Set selected item indicator color
+          icon: Icon(rootAppJson[index]['icon']),
+          title: Text(rootAppJson[index]['text']),
+        );
+      }),
+    );
   }
 }

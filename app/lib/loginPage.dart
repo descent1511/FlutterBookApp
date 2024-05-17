@@ -1,13 +1,15 @@
-// ignore: file_names
 import 'package:app/rootApp.dart';
 import 'package:app/signUpPage.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
 
-  String _username = '';
+  String _email = '';
   String _password = '';
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -22,11 +24,11 @@ class LoginPage extends StatelessWidget {
           children: <Widget>[
             TextFormField(
               onChanged: (value) {
-                _username = value;
+                _email = value;
               },
               decoration: const InputDecoration(
-                labelText: 'Username',
-                prefixIcon: Icon(Icons.person), 
+                labelText: 'Email',
+                prefixIcon: Icon(Icons.email),
               ),
             ),
             const SizedBox(height: 20),
@@ -35,18 +37,40 @@ class LoginPage extends StatelessWidget {
                 _password = value;
               },
               decoration: const InputDecoration(
-                prefixIcon: Icon(Icons.lock), 
+                prefixIcon: Icon(Icons.lock),
                 labelText: 'Password',
               ),
               obscureText: true,
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
-                debugPrint("Login");
-                debugPrint("Username: $_username");
-                debugPrint("Password: $_password");
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const RootApp()));
+              onPressed: () async {
+                try {
+                  UserCredential userCredential =
+                      await _auth.signInWithEmailAndPassword(
+                    email: _email,
+                    password: _password,
+                  );
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (_) => const RootApp()));
+                } on FirebaseAuthException catch (e) {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Login Error'),
+                      content:
+                          Text(e.message ?? 'An error occurred during login.'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('OK'),
+                        ),
+                      ],
+                    ),
+                  );
+                }
               },
               child: const Text('Sign in'),
             ),
@@ -54,14 +78,16 @@ class LoginPage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Don't have account?"),
+                const Text("Don't have an account?"),
                 TextButton(
-                    onPressed: () {
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => SignupPage()));
-                    },
-                    child: const Text("Sign up"))
+                  onPressed: () {
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (_) => SignupPage()));
+                  },
+                  child: const Text("Sign up"),
+                ),
               ],
-            )
+            ),
           ],
         ),
       ),

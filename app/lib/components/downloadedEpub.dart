@@ -21,16 +21,6 @@ class _DownloadedEpubState extends State<DownloadedEpub> {
     loadEpubFiles();
   }
 
-  void toggleFavorite(String epubFile) {
-    setState(() {
-      if (favoriteFiles.contains(epubFile)) {
-        favoriteFiles.remove(epubFile);
-      } else {
-        favoriteFiles.add(epubFile);
-      }
-    });
-  }
-
   Future<void> loadEpubFiles() async {
     try {
       final manifestContent = await rootBundle.loadString('AssetManifest.json');
@@ -49,38 +39,47 @@ class _DownloadedEpubState extends State<DownloadedEpub> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Downloaded books'),
+        backgroundColor: Colors.teal, // Set app bar background color
+        title: const Text(
+          'Downloaded Books',
+          style: TextStyle(color: Colors.white), // Set title color to white
+        ),
+        elevation: 0, // Remove app bar elevation
       ),
-      body: ListView.builder(
-        itemCount: epubFiles.length,
-        itemBuilder: (context, index) {
-          final epubFile = epubFiles[index];
-          return ListTile(
-            title: Text(path.basenameWithoutExtension(epubFile)),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  icon: Icon(favoriteFiles.contains(epubFile)
-                      ? Icons.favorite
-                      : Icons.favorite_border),
-                  onPressed: () => toggleFavorite(epubFile),
+      body: Container(
+        color: Colors.teal[50], // Set container color lighter than app bar
+        child: ListView.builder(
+          itemCount: epubFiles.length,
+          itemBuilder: (context, index) {
+            final epubFile = epubFiles[index];
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ReadingPage(epubPath: epubFile),
+                  ),
+                );
+              },
+              child: Card(
+                elevation: 2, // Add elevation for a card-like effect
+                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                child: ListTile(
+                  tileColor: Colors.white, // Set list tile background color
+                  title: Text(
+                    path.basenameWithoutExtension(epubFile),
+                    style: const TextStyle(
+                        color: Colors.black87), // Set text color to black
+                  ),
+                  trailing: const Icon(
+                    Icons.chevron_right,
+                    color: Colors.teal, // Set icon color to teal
+                  ),
                 ),
-                IconButton(
-                  icon: Icon(Icons.open_in_new),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ReadingPage(epubPath: epubFile),
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-          );
-        },
+              ),
+            );
+          },
+        ),
       ),
     );
   }

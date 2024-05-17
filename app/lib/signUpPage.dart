@@ -1,14 +1,19 @@
 import 'package:app/loginPage.dart';
 import 'package:app/rootApp.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignupPage extends StatelessWidget {
   String _name = '';
-  String _username = '';
+  String _email = '';
   String _password = '';
   String _confirmPassword = '';
 
   SignupPage({super.key});
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -33,13 +38,13 @@ class SignupPage extends StatelessWidget {
               const SizedBox(height: 20),
               TextFormField(
                 onChanged: (value) {
-                  _username = value;
+                  _email = value;
                 },
                 decoration: const InputDecoration(
-                  labelText: 'Username',
+                  labelText: 'Email',
                 ),
               ),
-             const SizedBox(height: 20),
+              const SizedBox(height: 20),
               TextFormField(
                 onChanged: (value) {
                   _password = value;
@@ -61,7 +66,7 @@ class SignupPage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   // Check if passwords match
                   if (_password != _confirmPassword) {
                     // Show an error message
@@ -81,24 +86,60 @@ class SignupPage extends StatelessWidget {
                       ),
                     );
                   } else {
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const RootApp()));
+                    try {
+                      UserCredential userCredential =
+                          await _auth.createUserWithEmailAndPassword(
+                        email: _email,
+                        password: _password,
+                      );
+
+                      // Save the user's name in Firestore
+                      await _firestore.collection('users').doc(userCredential.user!.uid).set({
+                        'name': _name,
+                        'email': _email,
+                      });
+
+                      // Update the user's display name
+                      await userCredential.user?.updateDisplayName(_name);
+
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (_) => const RootApp()));
+                    } on FirebaseAuthException catch (e) {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Registration Error'),
+                          content: Text(e.message ??
+                              'An error occurred during registration.'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
                   }
                 },
                 child: const Text('Sign up'),
-                
               ),
               const SizedBox(height: 20),
               Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text("Already have account?"),
-                TextButton(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Already have an account?"),
+                  TextButton(
                     onPressed: () {
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => LoginPage()));
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (_) => LoginPage()));
                     },
-                    child: const Text("Sign in"))
-              ],
-            )
+                    child: const Text("Sign in"),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
