@@ -44,6 +44,8 @@ dependencies:
   cloud_firestore: ^4.17.3
   firebase_auth: ^4.19.5
   firebase_core: ^2.31.0
+  google_ml_kit: ^0.13.0
+  image_picker: ^0.8.7
   
   
 dev_dependencies:
@@ -72,6 +74,9 @@ flutter:
   assets:
     - assets/images/
     - assets/books/
+    - assets/images/chapter1.jpg
+    - assets/images/theHouse.jpg
+    - assets/images/prologue.jpg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

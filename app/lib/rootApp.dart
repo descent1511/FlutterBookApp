@@ -2,6 +2,7 @@ import 'package:app/homePage.dart';
 import 'package:app/json/rootAppJson.dart';
 import 'package:app/favoritePage.dart';
 import 'package:app/profilePage.dart';
+import 'package:app/ocrPage.dart'; 
 import 'package:app/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
@@ -31,6 +32,7 @@ class _RootAppState extends State<RootApp> {
         HomePage(),
         FavoritePage(),
         ProfilePage(),
+        OCRPage(),
       ],
     );
   }

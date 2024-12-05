@@ -13,4 +13,6 @@ const List rootAppJson = [
     "icon" : LineIcons.user,
     "text" : "Profile",
   },
+  {"icon": LineIcons.photoVideo, 
+  "text": "OCR"}, 
 ];
